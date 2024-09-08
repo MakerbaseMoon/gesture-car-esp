@@ -25,18 +25,190 @@ function sendCommand(command) {
         console.error('Fetch error:', error);
     });
 }
+//第一行
+ForwardLeft.addEventListener('mousedown', () => {
+    sendCommand('ForwardLeft');
+    console.log('Starting ForwardLeft');
+});
+ForwardLeft.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping ForwardLeft');
+});
+ForwardLeft.addEventListener('touchstart', () => {
+    sendCommand('ForwardLeft');
+    console.log('Starting ForwardLeft(touch)');
+});
+ForwardLeft.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping ForwardLeft(touch)');
+});
 
-ForwardLeft.addEventListener('click', () => sendCommand('ForwardLeft'));
-Forward.addEventListener('click', () => sendCommand('Forward'));
-ForwardRight.addEventListener('click', () => sendCommand('ForwardRight'));
+Forward.addEventListener('mousedown', () => {
+    sendCommand('Forward');
+    console.log('Starting Forward');
+});
+Forward.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping Forward');
+});
+Forward.addEventListener('touchstart', () => {
+    sendCommand('ForwardLeft');
+    console.log('Starting Forward(touch)');
+});
+Forward.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping Forward(touch)');
+});
 
-StrafeLeft.addEventListener('click', () => sendCommand('StrafeLeft'));
-Stop.addEventListener('click', () => sendCommand('Stop'));
-StrafeRight.addEventListener('click', () => sendCommand('StrafeRight'));
+ForwardRight.addEventListener('mousedown', () => {
+    sendCommand('ForwardRight');
+    console.log('Starting ForwardRight');
+});
+ForwardRight.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping ForwardRight');
+});
+ForwardRight.addEventListener('touchstart', () => {
+    sendCommand('ForwardRight');
+    console.log('Starting ForwardRight(touch)');
+});
+ForwardRight.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping ForwardRight(touch)');
+});
+//第二行
+StrafeLeft.addEventListener('mousedown', () => {
+    sendCommand('StrafeLeft');
+    console.log('Starting StrafeLeft');
+});
+StrafeLeft.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping StrafeLeft');
+});
+StrafeLeft.addEventListener('touchstart', () => {
+    sendCommand('StrafeLeft');
+    console.log('Starting StrafeLeft(touch)');
+});
+StrafeLeft.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping StrafeLeft(touch)');
+});
 
-BackwardLeft.addEventListener('click', () => sendCommand('BackwardLeft'));
-Backward.addEventListener('click', () => sendCommand('Backward'));
-BackwardRight.addEventListener('click', () => sendCommand('BackwardRight'));
+Stop.addEventListener('mousedown', () => {
+    sendCommand('Stop');
+    console.log('Starting Stop');
+});
+Stop.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping Stop');
+});
+Stop.addEventListener('touchstart', () => {
+    sendCommand('Stop');
+    console.log('Starting Stop(touch)');
+});
+Stop.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping Stop(touch)');
+});
 
-TurnLeft.addEventListener('click', () => sendCommand('TurnLeft'));
-TurnRight.addEventListener('click', () => sendCommand('TurnRight'));
+StrafeRight.addEventListener('mousedown', () => {
+    sendCommand('StrafeRight');
+    console.log('Starting StrafeRight');
+});
+StrafeRight.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping StrafeRight');
+});
+StrafeRight.addEventListener('touchstart', () => {
+    sendCommand('StrafeRight');
+    console.log('Starting StrafeRight(touch)');
+});
+StrafeRight.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping StrafeRight(touch)');
+});
+//第三行
+BackwardLeft.addEventListener('mousedown', () => {
+    sendCommand('BackwardLeft');
+    console.log('Starting BackwardLeft');
+});
+BackwardLeft.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping BackwardLeft');
+});
+BackwardLeft.addEventListener('touchstart', () => {
+    sendCommand('BackwardLeft');
+    console.log('Starting BackwardLeft(touch)');
+});
+BackwardLeft.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping BackwardLeft(touch)');
+});
+
+Backward.addEventListener('mousedown', () => {
+    sendCommand('Backward');
+    console.log('Starting Backward');
+});
+Backward.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping Backward');
+});
+Backward.addEventListener('touchstart', () => {
+    sendCommand('Backward');
+    console.log('Starting Backward(touch)');
+});
+Backward.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping Backward(touch)');
+});
+
+BackwardRight.addEventListener('mousedown', () => {
+    sendCommand('BackwardRight');
+    console.log('Starting BackwardRight');
+});
+BackwardRight.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping BackwardRight');
+});
+BackwardRight.addEventListener('touchstart', () => {
+    sendCommand('BackwardRight');
+    console.log('Starting BackwardRight(touch)');
+});
+BackwardRight.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping BackwardRight(touch)');
+});
+//第四行
+TurnLeft.addEventListener('mousedown', () => {
+    sendCommand('TurnLeft');
+    console.log('Starting TurnLeft');
+});
+TurnLeft.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping TurnLeft');
+});
+TurnLeft.addEventListener('touchstart', () => {
+    sendCommand('TurnLeft');
+    console.log('Starting TurnLeft(touch)');
+});
+TurnLeft.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping TurnLeft(touch)');
+});
+
+TurnRight.addEventListener('mousedown', () => {
+    sendCommand('TurnRight');
+    console.log('Starting TurnRight');
+});
+TurnRight.addEventListener('mouseup', () => {
+    sendCommand('Stop');
+    console.log('Stopping TurnRight');
+});
+TurnRight.addEventListener('touchstart', () => {
+    sendCommand('TurnRight');
+    console.log('Starting TurnRight(touch)');
+});
+TurnRight.addEventListener('touchend', () => {
+    sendCommand('Stop');
+    console.log('Stopping TurnRight(touch)');
+});
