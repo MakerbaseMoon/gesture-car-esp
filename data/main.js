@@ -52,7 +52,7 @@ Forward.addEventListener('mouseup', () => {
     console.log('Stopping Forward');
 });
 Forward.addEventListener('touchstart', () => {
-    sendCommand('ForwardLeft');
+    sendCommand('Forward');
     console.log('Starting Forward(touch)');
 });
 Forward.addEventListener('touchend', () => {
