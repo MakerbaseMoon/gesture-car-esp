@@ -1,4 +1,4 @@
-const gateway = `ws://${window.location.hostname}/ws`;
+const gateway = (`ws://${window.location.hostname}/ws`);
 let websocket;
 
 const ForwardLeft = document.getElementById('ForwardLeft');
