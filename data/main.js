@@ -1,3 +1,6 @@
+const gateway = `ws://${window.location.hostname}/ws`;
+let websocket;
+
 const ForwardLeft = document.getElementById('ForwardLeft');
 const Forward = document.getElementById('Forward');
 const ForwardRight = document.getElementById('ForwardRight');
@@ -13,18 +16,47 @@ const BackwardRight = document.getElementById('BackwardRight');
 const TurnLeft = document.getElementById('TurnLeft');
 const TurnRight = document.getElementById('TurnRight');
 
-function sendCommand(command) {
-    fetch(`/${command}`, {
-        method: 'GET',
-    })
-    .then((response) => response.text())
-    .then(data => {
-        console.log(`ESP32: ${data}`);
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
-    });
+window.addEventListener('load', onload);
+
+function onload(event) {
+    initWebSocket();
 }
+
+function initWebSocket() {
+    console.log('Trying to open aWebSocket connection...');
+    websocket = new WebSocket(gateway);
+    websocket.onopen = onOpen;
+    websocket.onclose = onClose;
+    websocket.onmessage = onMessage;
+}
+
+function onOpen(event) {
+    console.log('Connection opened');
+}
+
+function onClose(event) {
+    console.log('Connection closed');
+    setTimeout(initWebSocket, 2000);
+}
+
+function onMessage(event) {
+    console.log('Message from server:', event.data);
+}
+
+function sendCommand(command) {
+    websocket.send(command);
+    // fetch(`/${command}`, {
+    //     method: 'GET',
+    // })
+    // .then((response) => response.text())
+    // .then(data => {
+    //     console.log(`ESP32: ${data}`);
+    // })
+    // .catch(error => {
+    //     console.error('Fetch error:', error);
+    // }); 
+}
+
 //第一行
 ForwardLeft.addEventListener('mousedown', () => {
     sendCommand('ForwardLeft');
