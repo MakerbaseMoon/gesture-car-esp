@@ -30,6 +30,42 @@ const uint8_t controller_mac[6] = CONTROLLER_MAC;
 esp_now_peer_info_t peerInfo;
 
 AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
+
+unsigned long lastTime = 0;
+unsigned long timerDelay = 30000;
+
+void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
+    AwsFrameInfo *info = (AwsFrameInfo*)arg;
+    if(info -> final && info -> index == 0 && info -> len == len && info -> opcode == WS_TEXT) {
+        data[len] = 0;
+        String message = (char*)data;
+        Serial.printf("\nwebsocket: %s\n", message);
+    }
+}
+
+void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+    switch (type)
+    {
+    case WS_EVT_CONNECT:
+        Serial.printf("WebSocket client #%u connected from %s\n", client -> id(), client -> remoteIP().toString().c_str());
+        break;
+    case WS_EVT_DISCONNECT:
+        Serial.printf("WebSocket client #%u disconnected\n", client -> id());
+        break;
+    case WS_EVT_DATA:
+        handleWebSocketMessage(arg, data, len);
+        break;
+    case WS_EVT_PONG:
+    case WS_EVT_ERROR:
+        break;
+    }
+}
+
+void initWebSocket() {
+    ws.onEvent(onEvent);
+    server.addHandler(&ws);
+}
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
     Serial.print("\r\nLast Packet Send Status:\t");
@@ -356,6 +392,12 @@ void setup() {
         request->send(200, "text/plain", "Stop command received.");
         Motor_STP();
     });
+
+    server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send(SPIFFS, "/favicon.jpg", "image/x-icon");
+    });
+    
+    initWebSocket();
 
     server.begin();
 }
