@@ -15,10 +15,178 @@
 #define BACK_IN3    27
 #define BACK_IN4    26
 
+int speed = 128;
+
 const char* ssid = SSID;
 const char* password = PASSWORD;
 
 AsyncWebServer server(80);
+
+void Motor_FW() {                   // 前進
+    Serial.println("Forward function");
+
+    analogWrite(FRONT_IN1, 0);
+    analogWrite(FRONT_IN2, speed);
+
+    analogWrite(FRONT_IN3, 0);
+    analogWrite(FRONT_IN4, speed);
+
+    analogWrite(BACK_IN1, 0);
+    analogWrite(BACK_IN2, speed);
+
+    analogWrite(BACK_IN3, 0);
+    analogWrite(BACK_IN4, speed);
+}
+void Motor_BW() {                   // 後退
+    Serial.println("Backward function");
+
+    analogWrite(FRONT_IN1, speed);
+    analogWrite(FRONT_IN2, 0);
+
+    analogWrite(FRONT_IN3, speed);
+    analogWrite(FRONT_IN4, 0);
+
+    analogWrite(BACK_IN1, speed);
+    analogWrite(BACK_IN2, 0);
+
+    analogWrite(BACK_IN3, speed);
+    analogWrite(BACK_IN4, 0);
+}
+void Motor_TL() {                   // 左轉
+    Serial.println("Turn left function");
+
+    analogWrite(FRONT_IN1, 0);
+    analogWrite(FRONT_IN2, speed);
+
+    analogWrite(FRONT_IN3, speed);
+    analogWrite(FRONT_IN4, 0);
+
+    analogWrite(BACK_IN1, 0);
+    analogWrite(BACK_IN2, speed);
+
+    analogWrite(BACK_IN3, speed);
+    analogWrite(BACK_IN4, 0);
+}
+void Motor_TR() {                   // 右轉
+    Serial.println("Turn right function");
+
+    analogWrite(FRONT_IN1, speed);
+    analogWrite(FRONT_IN2, 0);
+
+    analogWrite(FRONT_IN3, 0);
+    analogWrite(FRONT_IN4, speed);
+
+    analogWrite(BACK_IN1, speed);
+    analogWrite(BACK_IN2, 0);
+
+    analogWrite(BACK_IN3, 0);
+    analogWrite(BACK_IN4, speed);
+}
+void Motor_SL() {                   // 左平移
+    Serial.println("Strafe left function");
+
+    analogWrite(FRONT_IN1, 0);
+    analogWrite(FRONT_IN2, speed);
+
+    analogWrite(FRONT_IN3, speed);
+    analogWrite(FRONT_IN4, 0);
+
+    analogWrite(BACK_IN1, speed);
+    analogWrite(BACK_IN2, 0);
+
+    analogWrite(BACK_IN3, 0);
+    analogWrite(BACK_IN4, speed);
+}
+void Motor_SR() {                   // 右平移
+    Serial.println("Strafe right function");
+
+    analogWrite(FRONT_IN1, speed);
+    analogWrite(FRONT_IN2, 0);
+
+    analogWrite(FRONT_IN3, 0);
+    analogWrite(FRONT_IN4, speed);
+
+    analogWrite(BACK_IN1, 0);
+    analogWrite(BACK_IN2, speed);
+
+    analogWrite(BACK_IN3, speed);
+    analogWrite(BACK_IN4, 0);
+}
+void Motor_FL() {                   // 左前進
+    Serial.println("Forward left function");
+
+    analogWrite(FRONT_IN1, 0);
+    analogWrite(FRONT_IN2, speed);
+
+    analogWrite(FRONT_IN3, 0);
+    analogWrite(FRONT_IN4, 0);
+
+    analogWrite(BACK_IN1, 0);
+    analogWrite(BACK_IN2, 0);
+
+    analogWrite(BACK_IN3, 0);
+    analogWrite(BACK_IN4, speed);
+}
+void Motor_BL() {                   // 左後退
+    Serial.println("Backward left function");
+
+    analogWrite(FRONT_IN1, 0);
+    analogWrite(FRONT_IN2, 0);
+
+    analogWrite(FRONT_IN3, speed);
+    analogWrite(FRONT_IN4, 0);
+
+    analogWrite(BACK_IN1, speed);
+    analogWrite(BACK_IN2, 0);
+
+    analogWrite(BACK_IN3, 0);
+    analogWrite(BACK_IN4, 0);
+}
+void Motor_FR() {                   // 右前進
+    Serial.println("Forward right function");
+
+    analogWrite(FRONT_IN1, 0);
+    analogWrite(FRONT_IN2, 0);
+
+    analogWrite(FRONT_IN3, 0);
+    analogWrite(FRONT_IN4, speed);
+
+    analogWrite(BACK_IN1, 0);
+    analogWrite(BACK_IN2, speed);
+    
+    analogWrite(BACK_IN3, 0);
+    analogWrite(BACK_IN4, 0);
+}
+void Motor_BR() {                   // 右後退
+    Serial.println("Backward right function");
+
+    analogWrite(FRONT_IN1, speed);
+    analogWrite(FRONT_IN2, 0);
+
+    analogWrite(FRONT_IN3, 0);
+    analogWrite(FRONT_IN4, 0);
+
+    analogWrite(BACK_IN1, 0);
+    analogWrite(BACK_IN2, 0);
+    
+    analogWrite(BACK_IN3, speed);
+    analogWrite(BACK_IN4, 0);
+}
+void Motor_STP() {                  // 停止
+    Serial.println("Stop function");
+
+    analogWrite(FRONT_IN1, 0);
+    analogWrite(FRONT_IN2, 0);
+
+    analogWrite(FRONT_IN3, 0);
+    analogWrite(FRONT_IN4, 0);
+
+    analogWrite(BACK_IN1, 0);
+    analogWrite(BACK_IN2, 0);
+
+    analogWrite(BACK_IN3, 0);
+    analogWrite(BACK_IN4, 0);
+}
 
 void setup() {
     Serial.begin(115200);
@@ -63,21 +231,25 @@ void setup() {
     server.on("/forward", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println("forward");
         request->send(200, "text/plain", "Forward command received.");
+        Motor_FW();
     });
 
     server.on("/backward", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println("backward");
         request->send(200, "text/plain", "Backward command received.");
+        Motor_BW();
     });
 
     server.on("/left", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println("left");
         request->send(200, "text/plain", "Left command received.");
+        Motor_TL();
     });
 
     server.on("/right", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println("right");
         request->send(200, "text/plain", "Right command received.");
+        Motor_TR();
     });
 
     server.begin();
