@@ -25,6 +25,15 @@ void setup() {
     Serial.printf("\n");
     while(!Serial);
 
+    pinMode(FRONT_IN1, OUTPUT);
+    pinMode(FRONT_IN2, OUTPUT);
+    pinMode(FRONT_IN3, OUTPUT);
+    pinMode(FRONT_IN4, OUTPUT);
+    pinMode(BACK_IN1, OUTPUT);
+    pinMode(BACK_IN2, OUTPUT);
+    pinMode(BACK_IN3, OUTPUT);
+    pinMode(BACK_IN4, OUTPUT);
+
     if(!SPIFFS.begin(true)) {
         Serial.println("SPIFFS initialization failed!");
         return;
@@ -53,22 +62,22 @@ void setup() {
 
     server.on("/forward", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println("forward");
-        request->send(200, "text/plain", "Forward command received");
+        request->send(200, "text/plain", "Forward command received.");
     });
 
     server.on("/backward", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println("backward");
-        request->send(200, "text/plain", "Backward command received");
+        request->send(200, "text/plain", "Backward command received.");
     });
 
     server.on("/left", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println("left");
-        request->send(200, "text/plain", "Left command received");
+        request->send(200, "text/plain", "Left command received.");
     });
 
     server.on("/right", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println("right");
-        request->send(200, "text/plain", "Right command received");
+        request->send(200, "text/plain", "Right command received.");
     });
 
     server.begin();
