@@ -4,189 +4,224 @@
 #include <SPIFFS.h>
 #include <esp_now.h>
 
-#define FRONT_IN1   18
-#define FRONT_IN2   2
+#define RIGHT_IN1   18    // B
+#define RIGHT_IN2   16    // B
 
-#define FRONT_IN3   4
-#define FRONT_IN4   16
+#define RIGHT_IN3    4    // F 
+#define RIGHT_IN4    2    // F
 
-#define BACK_IN1    13
-#define BACK_IN2    25
+#define LEFT_IN1    13    // B
+#define LEFT_IN2    27    // B
 
-#define BACK_IN3    27
-#define BACK_IN4    26
+#define LEFT_IN3    26    // F
+#define LEFT_IN4    25    // F
 
 int speed = 128;
 
 const char* ssid = SSID;
 const char* password = PASSWORD;
 
+#define CAR_MAC {0xCC, 0x7B, 0x5C, 0x99, 0x59, 0x14}
+#define CONTROLLER_MAC {0xB4, 0x8A, 0x0A, 0x9B, 0x05, 0x44}
+
+const uint8_t car_mac[6] = CAR_MAC;
+const uint8_t controller_mac[6] = CONTROLLER_MAC;
+
+esp_now_peer_info_t peerInfo;
+
 AsyncWebServer server(80);
+
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+    Serial.print("\r\nLast Packet Send Status:\t");
+    Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+}
+
+void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
+    Serial.printf("Packet received from: %02X:%02X:%02X:%02X:%02X:%02X\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+    char *data = (char *)malloc(len + 1);
+    if (data == NULL) {
+        Serial.println("malloc failed");
+        return;
+    }
+    memcpy(data, incomingData, len);
+    data[len] = 0;
+    Serial.printf("Received data: %s\n", data);
+}
 
 void Motor_FW() {                   // 前進
     Serial.println("Forward function");
 
-    analogWrite(FRONT_IN1, 0);
-    analogWrite(FRONT_IN2, speed);
+    analogWrite(RIGHT_IN1, speed);
+    analogWrite(RIGHT_IN2, 0);
 
-    analogWrite(FRONT_IN3, 0);
-    analogWrite(FRONT_IN4, speed);
+    analogWrite(RIGHT_IN3, speed);
+    analogWrite(RIGHT_IN4, 0);
 
-    analogWrite(BACK_IN1, 0);
-    analogWrite(BACK_IN2, speed);
+    analogWrite(LEFT_IN1, 0);
+    analogWrite(LEFT_IN2, speed);
 
-    analogWrite(BACK_IN3, 0);
-    analogWrite(BACK_IN4, speed);
+    analogWrite(LEFT_IN3, 0);
+    analogWrite(LEFT_IN4, speed);
 }
+
 void Motor_BW() {                   // 後退
     Serial.println("Backward function");
 
-    analogWrite(FRONT_IN1, speed);
-    analogWrite(FRONT_IN2, 0);
+    analogWrite(RIGHT_IN1, 0);
+    analogWrite(RIGHT_IN2, speed);
 
-    analogWrite(FRONT_IN3, speed);
-    analogWrite(FRONT_IN4, 0);
+    analogWrite(RIGHT_IN3, 0);
+    analogWrite(RIGHT_IN4, speed);
 
-    analogWrite(BACK_IN1, speed);
-    analogWrite(BACK_IN2, 0);
+    analogWrite(LEFT_IN1, speed);
+    analogWrite(LEFT_IN2, 0);
 
-    analogWrite(BACK_IN3, speed);
-    analogWrite(BACK_IN4, 0);
+    analogWrite(LEFT_IN3, speed);
+    analogWrite(LEFT_IN4, 0);
 }
+
 void Motor_TL() {                   // 左轉
     Serial.println("Turn left function");
 
-    analogWrite(FRONT_IN1, 0);
-    analogWrite(FRONT_IN2, speed);
+    analogWrite(RIGHT_IN1, speed);
+    analogWrite(RIGHT_IN2, 0);
 
-    analogWrite(FRONT_IN3, speed);
-    analogWrite(FRONT_IN4, 0);
+    analogWrite(RIGHT_IN3, speed);
+    analogWrite(RIGHT_IN4, 0);
 
-    analogWrite(BACK_IN1, 0);
-    analogWrite(BACK_IN2, speed);
+    analogWrite(LEFT_IN1, speed);
+    analogWrite(LEFT_IN2, 0);
 
-    analogWrite(BACK_IN3, speed);
-    analogWrite(BACK_IN4, 0);
+    analogWrite(LEFT_IN3, speed);
+    analogWrite(LEFT_IN4, 0);
 }
+
 void Motor_TR() {                   // 右轉
     Serial.println("Turn right function");
 
-    analogWrite(FRONT_IN1, speed);
-    analogWrite(FRONT_IN2, 0);
+    analogWrite(RIGHT_IN1, 0);
+    analogWrite(RIGHT_IN2, speed);
 
-    analogWrite(FRONT_IN3, 0);
-    analogWrite(FRONT_IN4, speed);
+    analogWrite(RIGHT_IN3, 0);
+    analogWrite(RIGHT_IN4, speed);
 
-    analogWrite(BACK_IN1, speed);
-    analogWrite(BACK_IN2, 0);
+    analogWrite(LEFT_IN1, 0);
+    analogWrite(LEFT_IN2, speed);
 
-    analogWrite(BACK_IN3, 0);
-    analogWrite(BACK_IN4, speed);
+    analogWrite(LEFT_IN3, 0);
+    analogWrite(LEFT_IN4, speed);
 }
+
 void Motor_SL() {                   // 左平移
     Serial.println("Strafe left function");
 
-    analogWrite(FRONT_IN1, 0);
-    analogWrite(FRONT_IN2, speed);
+    analogWrite(RIGHT_IN1, 0);
+    analogWrite(RIGHT_IN2, speed);
 
-    analogWrite(FRONT_IN3, speed);
-    analogWrite(FRONT_IN4, 0);
+    analogWrite(RIGHT_IN3, speed);
+    analogWrite(RIGHT_IN4, 0);
 
-    analogWrite(BACK_IN1, speed);
-    analogWrite(BACK_IN2, 0);
+    analogWrite(LEFT_IN1, 0);
+    analogWrite(LEFT_IN2, speed);
 
-    analogWrite(BACK_IN3, 0);
-    analogWrite(BACK_IN4, speed);
+    analogWrite(LEFT_IN3, speed);
+    analogWrite(LEFT_IN4, 0);
 }
+
 void Motor_SR() {                   // 右平移
     Serial.println("Strafe right function");
 
-    analogWrite(FRONT_IN1, speed);
-    analogWrite(FRONT_IN2, 0);
+    analogWrite(RIGHT_IN1, speed);
+    analogWrite(RIGHT_IN2, 0);
 
-    analogWrite(FRONT_IN3, 0);
-    analogWrite(FRONT_IN4, speed);
+    analogWrite(RIGHT_IN3, 0);
+    analogWrite(RIGHT_IN4, speed);
 
-    analogWrite(BACK_IN1, 0);
-    analogWrite(BACK_IN2, speed);
+    analogWrite(LEFT_IN1, speed);
+    analogWrite(LEFT_IN2, 0);
 
-    analogWrite(BACK_IN3, speed);
-    analogWrite(BACK_IN4, 0);
+    analogWrite(LEFT_IN3, 0);
+    analogWrite(LEFT_IN4, speed);
 }
+
 void Motor_FL() {                   // 左前進
     Serial.println("Forward left function");
 
-    analogWrite(FRONT_IN1, 0);
-    analogWrite(FRONT_IN2, speed);
+    analogWrite(RIGHT_IN1, 0);
+    analogWrite(RIGHT_IN2, 0);
 
-    analogWrite(FRONT_IN3, 0);
-    analogWrite(FRONT_IN4, 0);
+    analogWrite(RIGHT_IN3, speed);
+    analogWrite(RIGHT_IN4, 0);
 
-    analogWrite(BACK_IN1, 0);
-    analogWrite(BACK_IN2, 0);
+    analogWrite(LEFT_IN1, 0);
+    analogWrite(LEFT_IN2, speed);
 
-    analogWrite(BACK_IN3, 0);
-    analogWrite(BACK_IN4, speed);
+    analogWrite(LEFT_IN3, 0);
+    analogWrite(LEFT_IN4, 0);
 }
+
 void Motor_BL() {                   // 左後退
     Serial.println("Backward left function");
 
-    analogWrite(FRONT_IN1, 0);
-    analogWrite(FRONT_IN2, 0);
+    analogWrite(RIGHT_IN1, 0);
+    analogWrite(RIGHT_IN2, speed);
 
-    analogWrite(FRONT_IN3, speed);
-    analogWrite(FRONT_IN4, 0);
+    analogWrite(RIGHT_IN3, 0);
+    analogWrite(RIGHT_IN4, 0);
 
-    analogWrite(BACK_IN1, speed);
-    analogWrite(BACK_IN2, 0);
+    analogWrite(LEFT_IN1, 0);
+    analogWrite(LEFT_IN2, 0);
 
-    analogWrite(BACK_IN3, 0);
-    analogWrite(BACK_IN4, 0);
+    analogWrite(LEFT_IN3, speed);
+    analogWrite(LEFT_IN4, 0);
 }
+
 void Motor_FR() {                   // 右前進
     Serial.println("Forward right function");
 
-    analogWrite(FRONT_IN1, 0);
-    analogWrite(FRONT_IN2, 0);
+    analogWrite(RIGHT_IN1, speed);
+    analogWrite(RIGHT_IN2, 0);
 
-    analogWrite(FRONT_IN3, 0);
-    analogWrite(FRONT_IN4, speed);
+    analogWrite(RIGHT_IN3, 0);
+    analogWrite(RIGHT_IN4, 0);
 
-    analogWrite(BACK_IN1, 0);
-    analogWrite(BACK_IN2, speed);
+    analogWrite(LEFT_IN1, 0);
+    analogWrite(LEFT_IN2, 0);
     
-    analogWrite(BACK_IN3, 0);
-    analogWrite(BACK_IN4, 0);
+    analogWrite(LEFT_IN3, 0);
+    analogWrite(LEFT_IN4, speed);
 }
+
 void Motor_BR() {                   // 右後退
     Serial.println("Backward right function");
 
-    analogWrite(FRONT_IN1, speed);
-    analogWrite(FRONT_IN2, 0);
+    analogWrite(RIGHT_IN1, 0);
+    analogWrite(RIGHT_IN2, 0);
 
-    analogWrite(FRONT_IN3, 0);
-    analogWrite(FRONT_IN4, 0);
+    analogWrite(RIGHT_IN3, 0);
+    analogWrite(RIGHT_IN4, speed);
 
-    analogWrite(BACK_IN1, 0);
-    analogWrite(BACK_IN2, 0);
+    analogWrite(LEFT_IN1, speed);
+    analogWrite(LEFT_IN2, 0);
     
-    analogWrite(BACK_IN3, speed);
-    analogWrite(BACK_IN4, 0);
+    analogWrite(LEFT_IN3, 0);
+    analogWrite(LEFT_IN4, 0);
 }
+
 void Motor_STP() {                  // 停止
     Serial.println("Stop function");
 
-    analogWrite(FRONT_IN1, 0);
-    analogWrite(FRONT_IN2, 0);
+    analogWrite(RIGHT_IN1, 0);
+    analogWrite(RIGHT_IN2, 0);
 
-    analogWrite(FRONT_IN3, 0);
-    analogWrite(FRONT_IN4, 0);
+    analogWrite(RIGHT_IN3, 0);
+    analogWrite(RIGHT_IN4, 0);
 
-    analogWrite(BACK_IN1, 0);
-    analogWrite(BACK_IN2, 0);
+    analogWrite(LEFT_IN1, 0);
+    analogWrite(LEFT_IN2, 0);
 
-    analogWrite(BACK_IN3, 0);
-    analogWrite(BACK_IN4, 0);
+    analogWrite(LEFT_IN3, 0);
+    analogWrite(LEFT_IN4, 0);
 }
 
 void setup() {
@@ -194,14 +229,36 @@ void setup() {
     Serial.printf("\n");
     while(!Serial);
 
-    pinMode(FRONT_IN1, OUTPUT);
-    pinMode(FRONT_IN2, OUTPUT);
-    pinMode(FRONT_IN3, OUTPUT);
-    pinMode(FRONT_IN4, OUTPUT);
-    pinMode(BACK_IN1, OUTPUT);
-    pinMode(BACK_IN2, OUTPUT);
-    pinMode(BACK_IN3, OUTPUT);
-    pinMode(BACK_IN4, OUTPUT);
+    WiFi.mode(WIFI_STA);
+    Serial.println("Controller MAC address: " + WiFi.macAddress());
+    Serial.printf("Car MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n", car_mac[0], car_mac[1], car_mac[2], car_mac[3], car_mac[4], car_mac[5]);
+
+    if (esp_now_init() != ESP_OK) {
+        Serial.println("Error initializing ESP-NOW");
+        while(1);
+    }
+
+    esp_now_register_send_cb(OnDataSent);
+
+    memcpy(peerInfo.peer_addr, car_mac, 6);
+    peerInfo.channel = 0;
+    peerInfo.encrypt = false;
+
+    if (esp_now_add_peer(&peerInfo) != ESP_OK){
+        Serial.println("Failed to add peer");
+        return;
+    }
+
+    esp_now_register_recv_cb(esp_now_recv_cb_t(OnDataRecv));
+
+    pinMode(RIGHT_IN1, OUTPUT);
+    pinMode(RIGHT_IN2, OUTPUT);
+    pinMode(LEFT_IN1, OUTPUT);
+    pinMode(LEFT_IN2, OUTPUT);
+    pinMode(RIGHT_IN3, OUTPUT);
+    pinMode(RIGHT_IN4, OUTPUT);
+    pinMode(LEFT_IN3, OUTPUT);
+    pinMode(LEFT_IN4, OUTPUT);
 
     if(!SPIFFS.begin(true)) {
         Serial.println("SPIFFS initialization failed!");
@@ -304,5 +361,13 @@ void setup() {
 }
 
 void loop() {
+    String message = "Hello from 123";
+    esp_err_t result = esp_now_send(car_mac, (uint8_t *)message.c_str(), message.length());
 
+    if (result == ESP_OK) {
+        Serial.println("Sent with success");
+    } else {
+        Serial.println("Error sending the data");
+    }
+    delay(1000);
 }
