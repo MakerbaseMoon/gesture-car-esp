@@ -228,28 +228,75 @@ void setup() {
         request->send(SPIFFS, "/main.js", "application/javascript");
     });
 
-    server.on("/forward", HTTP_GET, [](AsyncWebServerRequest *request){
-        Serial.println("forward");
+    server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("style success");
+        request->send(SPIFFS, "/style.css", "text/css");
+    });
+
+    server.on("/Forward", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("Forward");
         request->send(200, "text/plain", "Forward command received.");
         Motor_FW();
     });
 
-    server.on("/backward", HTTP_GET, [](AsyncWebServerRequest *request){
-        Serial.println("backward");
+    server.on("/Backward", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("Backward");
         request->send(200, "text/plain", "Backward command received.");
         Motor_BW();
     });
 
-    server.on("/left", HTTP_GET, [](AsyncWebServerRequest *request){
-        Serial.println("left");
-        request->send(200, "text/plain", "Left command received.");
+    server.on("/TurnLeft", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("TurnLeft");
+        request->send(200, "text/plain", "TurnLeft command received.");
         Motor_TL();
     });
 
-    server.on("/right", HTTP_GET, [](AsyncWebServerRequest *request){
-        Serial.println("right");
-        request->send(200, "text/plain", "Right command received.");
+    server.on("/TurnRight", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("TurnRight");
+        request->send(200, "text/plain", "TurnRight command received.");
         Motor_TR();
+    });
+
+    server.on("/StrafeLeft", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("StrafeLeft");
+        request->send(200, "text/plain", "StrafeLeft command received.");
+        Motor_SL();
+    });
+
+    server.on("/StrafeRight", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("StrafeRight");
+        request->send(200, "text/plain", "StrafeRight command received.");
+        Motor_SR();
+    });
+
+    server.on("/ForwardLeft", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("ForwardLeft");
+        request->send(200, "text/plain", "ForwardLeft command received.");
+        Motor_FL();
+    });
+
+    server.on("/BackwardLeft", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("BackwardLeft");
+        request->send(200, "text/plain", "BackwardLeft command received.");
+        Motor_BL();
+    });
+
+    server.on("/ForwardRight", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("ForwardRight");
+        request->send(200, "text/plain", "ForwardRight command received.");
+        Motor_FR();
+    });
+
+    server.on("/BackwardRight", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("BackwardRight");
+        request->send(200, "text/plain", "BackwardRight command received.");
+        Motor_BR();
+    });
+    
+    server.on("/Stop", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("Stop");
+        request->send(200, "text/plain", "Stop command received.");
+        Motor_STP();
     });
 
     server.begin();
