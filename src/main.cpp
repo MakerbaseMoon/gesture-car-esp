@@ -201,12 +201,30 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
         } else if(message.indexOf("StrafeRight") >= 0) {
             Motor_SR();
             Serial.printf("Websocket: StrafeRight\n");
-        } else if(message.indexOf("Forward") >= 0) {
-            Motor_FW();
-            Serial.printf("Websocket: Forward\n");
+        } else if(message.indexOf("ForwardRight") >= 0) {
+            Motor_FR();
+            Serial.printf("Websocket: ForwardRight\n");
+        } else if(message.indexOf("ForwardLeft") >= 0) {
+            Motor_FL();
+            Serial.printf("Websocket: ForwardLeft\n");
+        } else if(message.indexOf("BackwardLeft") >= 0) {
+            Motor_BL();
+            Serial.printf("Websocket: BackwardLeft\n");
+        } else if(message.indexOf("BackwardRight") >= 0) {
+            Motor_BR();
+            Serial.printf("Websocket: BackwardRight\n");
         } else if(message.indexOf("Backward") >= 0) {
             Motor_BW();
             Serial.printf("Websocket: Backward\n");
+        } else if(message.indexOf("TurnLeft") >= 0) {
+            Motor_TL();
+            Serial.printf("Websocket: TurnLeft\n");
+        } else if(message.indexOf("TurnRight") >= 0) {
+            Motor_TR();
+            Serial.printf("Websocket: TurnRight\n");
+        } else if(message.indexOf("Forward") >= 0) {
+            Motor_FW();
+            Serial.printf("Websocket: Forward\n");
         } else {
             Motor_STP();
             Serial.printf("Websocket: Stop\n");
@@ -248,9 +266,12 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     data[len] = 0;
     Serial.printf("Received data: %s\n", data);
 
-    if(strcmp(data, "StrafeLeft") == 0) {
-        Motor_SL();
-        Serial.println("The string is StrafeLeft.");
+    if(strcmp(data, "ForwardRight") == 0) {
+        Motor_FR();
+        Serial.println("The string is ForwardRight.");
+    } else if(strcmp(data, "StrafeRight") == 0) {
+        Motor_SR();
+        Serial.println("The string is StrafeRight.");
     } else if(strcmp(data, "StrafeRight") == 0) {
         Motor_SR();
         Serial.println("The string is StrafeRight.");
@@ -259,7 +280,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
         Serial.println("The string is Forward.");
     } else if(strcmp(data, "Backward") == 0) {
         Motor_BW();
-        Serial.println("The string is Backward.");
+        Serial.println("The string is Backward.");   
     } else {
         Motor_STP();
         Serial.println("The string is Stop.");

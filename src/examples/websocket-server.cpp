@@ -53,6 +53,7 @@ void setup() {
         Serial.print(".");
     }
     Serial.println("\nConnected to Wi-Fi");
+    WiFi.softAP(AP_SSID, AP_PASSWORD);
 
     Serial.print("ESP32 IP: ");
     Serial.println(WiFi.localIP());
